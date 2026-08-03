@@ -172,6 +172,50 @@ decision = QuintaOrdemGate.default().evaluate(context)
 print(decision.status.value, decision.confidence)
 ```
 
+## Cenários demonstráveis
+
+O exemplo `examples/scenarios.py` executa os quatro resultados possíveis usando contextos
+pequenos e reproduzíveis:
+
+| Cenário | Resultado esperado | Motivo operacional |
+| --- | --- | --- |
+| resultado íntegro e resolvido | `APPROVED` | nenhum requisito pendente |
+| ponto aberto | `CONDITIONAL` | exige revisão humana |
+| gate anterior devolvido | `RETURNED` | a correção deve ocorrer na origem |
+| original modificado | `BLOCKED` | a cadeia de custódia impede a promoção |
+
+Execute:
+
+```bash
+python examples/scenarios.py
+```
+
+Cada cenário valida o estado esperado e grava seu próprio bundle em `output/scenarios/`. Se uma
+alteração futura produzir um estado diferente, o exemplo termina com erro em vez de apresentar
+uma demonstração incorreta.
+
+## Integração demonstrável com o TCRIA
+
+O exemplo `examples/tcria_integration.py` mostra o hand-off normalizado completo:
+
+```text
+payload TCRIA
+  -> TCRIAExecutionContextAdapter
+  -> ExecutionContext destacado do payload original
+  -> QuintaOrdemGate
+  -> decisão + bundle + manifesto SHA-256
+```
+
+Execute:
+
+```bash
+python examples/tcria_integration.py
+```
+
+O payload contém um fato suportado e um sinal ainda pendente. O adaptador preserva o sinal sem
+promoção, cria um ponto de revisão humana e o gate retorna `CONDITIONAL`. O exemplo também confirma
+que o payload original do TCRIA não foi modificado e grava o bundle em `output/tcria/`.
+
 ## Relatórios derivados
 
 Use a operação única de bundle para aplicar a proteção de caminhos e publicar o manifesto por
@@ -274,6 +318,8 @@ python -m pip install -e ".[dev]"
 pytest
 ruff check .
 python examples/demo.py
+python examples/scenarios.py
+python examples/tcria_integration.py
 ```
 
 O demo gera JSON consolidado, Markdown consolidado, um relatório por finding e manifesto em

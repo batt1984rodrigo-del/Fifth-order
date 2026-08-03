@@ -346,3 +346,41 @@ def test_demo_generates_complete_bundle(tmp_path):
     assert list((tmp_path / "output" / "demo").rglob("*_quinta_ordem.json"))
     assert list((tmp_path / "output" / "demo").rglob("*_quinta_ordem.md"))
     assert list((tmp_path / "output" / "demo").rglob("*_manifest.json"))
+
+
+def test_scenarios_generate_all_four_states_and_bundles(tmp_path):
+    project_root = Path(__file__).resolve().parents[1]
+    scenarios = project_root / "examples" / "scenarios.py"
+
+    completed = subprocess.run(
+        [sys.executable, str(scenarios)],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    for status in ("approved", "conditional", "returned_for_correction", "blocked"):
+        assert f"status={status}" in completed.stdout
+    assert len(list((tmp_path / "output" / "scenarios").rglob("*_manifest.json"))) == 4
+
+
+def test_tcria_integration_preserves_signal_and_generates_bundle(tmp_path):
+    project_root = Path(__file__).resolve().parents[1]
+    integration = project_root / "examples" / "tcria_integration.py"
+
+    completed = subprocess.run(
+        [sys.executable, str(integration)],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert "flow=tcria->execution_context->quinta_ordem_gate->report_bundle" in completed.stdout
+    assert "signal_promoted=false" in completed.stdout
+    assert "status=conditional" in completed.stdout
+    assert "human_review=true" in completed.stdout
+    assert list((tmp_path / "output" / "tcria").rglob("*_manifest.json"))
