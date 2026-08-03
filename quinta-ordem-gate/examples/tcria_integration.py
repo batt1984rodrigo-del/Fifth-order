@@ -13,7 +13,7 @@ from quinta_ordem.reporting import write_report_bundle
 
 def normalized_tcria_payload() -> dict[str, object]:
     return {
-        "quinta_ordem_adapter_version": "1.0",
+        "quinta_ordem_adapter_version": TCRIAExecutionContextAdapter.adapter_schema_version,
         "execution_id": "tcria-integration-001",
         "evidence": [
             {
