@@ -14,6 +14,7 @@ numérica em certeza da verdade.
 - preservação monotônica de qualquer bloqueio anterior;
 - JSON e Markdown consolidados, um relatório por finding e manifesto SHA-256;
 - adaptador TCRIA opcional e isolado;
+- modo móvel externo para reconstruir checkpoints de bundles oficiais concluídos do TCRIA;
 - revisão humana obrigatória para resultados não aprovados.
 
 Não há integração OpenAI, agente, análise emocional ou leitura direta de documentos neste MVP.
@@ -43,6 +44,10 @@ src/quinta_ordem/
 ├── reporting.py              # bundle derivado e manifesto SHA-256
 ├── adapters/
 │   └── tcria.py              # adaptador puro e opcional
+├── mobile/
+│   ├── tcria.py               # observador externo e cadeia de recibos
+│   ├── models.py             # sessão e checkpoints imutáveis
+│   └── reporting.py          # JSON, JSONL, Markdown e manifesto
 └── verifiers/
     ├── base.py               # interface Verifier
     ├── registry.py           # registro ordenado e extensível
@@ -309,6 +314,78 @@ preenchidos por suposição. O payload recebido é copiado profundamente e perma
 Contextos não serializáveis, origens relativas ou ambíguas e estruturas inválidas são recusados
 antes da escrita do bundle; não há relatório parcial nem conversão implícita para texto.
 
+## Fifth Order móvel para o TCRIA
+
+O modo móvel acompanha o TCRIA como módulo externo. O TCRIA permanece em seu próprio repositório e
+não é importado, alterado ou chamado pelo Fifth Order:
+
+```text
+TCRIA inalterado
+  -> JSON oficial concluído
+  -> FifthOrderMobileGate
+  -> checkpoint por gate + resumo do porquê
+  -> cadeia SHA-256 + JSONL + relatório + manifesto
+```
+
+O observador conserva separadamente:
+
+- `source_status`, `source_reason` e `source_evidence`, exatamente como publicados pelo TCRIA;
+- `companion_status`, `companion_reason` e `companion_summary`, próprios do Fifth Order;
+- SHA-256 dos bytes do JSON oficial e SHA-256 do payload canônico;
+- recibo genesis, sequência e vínculo `previous_receipt_sha256` em cada checkpoint;
+- autoridade `complementary_non_authoritative` e escopo `custody_and_explanation_only`.
+
+Mapeamento complementar, sem modificar o estado oficial:
+
+| Estado TCRIA | Estado Fifth Order | Leitura do módulo móvel |
+| --- | --- | --- |
+| `PASS` | `approved` | observação formal preservada; não é aprovação do mérito |
+| `WARN` | `conditional` | atenção e revisão humana |
+| `BLOCKED` | `blocked` | bloqueio preservado sem promoção |
+| `NOT_EVALUATED` | `conditional` | requisito não avaliado não conta como satisfeito |
+| `NOT_APPLICABLE` | `conditional` | limitação oficial mantida explícita |
+| desconhecido | `blocked` | falha fechada, preservando o texto de origem |
+
+O mapeamento é monotônico dentro de cada documento: depois de um checkpoint `blocked`, os
+checkpoints posteriores continuam `blocked`, embora o `source_status` de cada gate permaneça
+inalterado.
+
+Uso externo:
+
+```bash
+python -m quinta_ordem.mobile \
+  /caminho/para/auditoria_oficial_tcria.json \
+  --output /caminho/externo/fifth-order-output \
+  --producer-revision <commit-tcria-quando-conhecido>
+```
+
+Ou pela API:
+
+```python
+from pathlib import Path
+
+from quinta_ordem.mobile import FifthOrderMobileGate, write_mobile_report_bundle
+
+session = FifthOrderMobileGate().observe_bundle_file(
+    Path("/caminho/para/auditoria_oficial_tcria.json"),
+    producer_revision="<commit conhecido>",
+)
+reports = write_mobile_report_bundle(session, Path("/caminho/externo/fifth-order-output"))
+print(reports.manifest)
+```
+
+O output contém JSON da sessão, ledger JSONL com um registro pequeno por gate, Markdown legível e
+manifesto dos arquivos derivados. `document.text` e os sinais extensos do TCRIA não são copiados.
+Registros oficiais sem gates são enumerados, mas o Fifth Order não inventa checkpoints ausentes.
+As contagens oficiais e a presença dos cinco gates atuais são validadas para impedir que um bundle
+truncado seja apresentado como trilha completa.
+
+Limite declarado: o TCRIA atual calcula os gates em memória e os publica somente no JSON final.
+Por isso, este modo usa `observation_mode="post_bundle_reconstruction"`; ele acompanha cada gate
+publicado assim que o bundle fica disponível, mas não afirma observação interna em tempo real.
+Uma cadeia de hashes detecta alterações quando o recibo final é preservado fora da própria cadeia;
+ela não é assinatura digital nem prova autônoma de autoria do TCRIA.
+
 ## Instalação e validação
 
 ```bash
@@ -320,6 +397,7 @@ ruff check .
 python examples/demo.py
 python examples/scenarios.py
 python examples/tcria_integration.py
+python -m quinta_ordem.mobile --help
 ```
 
 O demo gera JSON consolidado, Markdown consolidado, um relatório por finding e manifesto em
