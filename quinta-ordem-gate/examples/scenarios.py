@@ -1,5 +1,5 @@
 import sys
-from copy import deepcopy
+from dataclasses import asdict
 from hashlib import sha256
 from pathlib import Path
 
