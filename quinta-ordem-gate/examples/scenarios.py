@@ -40,7 +40,7 @@ def base_context(execution_id: str) -> ExecutionContext:
 def build_scenarios() -> list[tuple[str, DecisionStatus, ExecutionContext]]:
     approved = base_context("scenario-approved")
 
-    conditional_values = deepcopy(approved.__dict__)
+    conditional_values = asdict(approved)
     conditional_values["execution_id"] = "scenario-conditional"
     conditional_values["metadata"] = {
         "open_points": [
@@ -54,14 +54,12 @@ def build_scenarios() -> list[tuple[str, DecisionStatus, ExecutionContext]]:
     }
     conditional = ExecutionContext(**conditional_values)
 
-    returned_values = deepcopy(approved.__dict__)
+    returned_values = asdict(approved)
     returned_values["execution_id"] = "scenario-returned"
-    returned_values["gate_results"] = [
-        {"gate": "tcria", "status": "returned_for_correction"}
-    ]
+    returned_values["gate_results"] = [{"gate": "tcria", "status": "returned_for_correction"}]
     returned = ExecutionContext(**returned_values)
 
-    blocked_values = deepcopy(approved.__dict__)
+    blocked_values = asdict(approved)
     blocked_values["execution_id"] = "scenario-blocked"
     blocked_values["evidence"][0]["modified_original"] = True
     blocked = ExecutionContext(**blocked_values)
