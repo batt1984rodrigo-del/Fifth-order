@@ -3,7 +3,7 @@
 > Meta-gate determinístico para avaliar a qualidade e a precisão informacional de sistemas de IA.
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![License](https://img.shields.io/badge/license-consulte%20o%20reposit%C3%B3rio-lightgrey)](../)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 
 O Quinta Ordem Gate recebe um `ExecutionContext`, valida requisitos objetivos e produz uma decisão
 auditável. O núcleo preserva as evidências recebidas, respeita bloqueios anteriores e trata a
