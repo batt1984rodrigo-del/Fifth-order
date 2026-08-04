@@ -1,12 +1,37 @@
 # Quinta Ordem Gate
 
-Meta-gate determinístico de qualidade e precisão informacional para sistemas de IA.
+> Meta-gate determinístico para avaliar a qualidade e a precisão informacional de sistemas de IA.
 
-O projeto recebe um `ExecutionContext`, verifica requisitos objetivos e produz uma decisão
-auditável. Ele não altera evidências, não substitui gates anteriores e não transforma confiança
-numérica em certeza da verdade.
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-consulte%20o%20reposit%C3%B3rio-lightgrey)](../)
 
-## Escopo do MVP
+O Quinta Ordem Gate recebe um `ExecutionContext`, valida requisitos objetivos e produz uma decisão
+auditável. O núcleo preserva as evidências recebidas, respeita bloqueios anteriores e trata a
+confiança como medida de cobertura verificável — nunca como certeza da verdade.
+
+## Visão geral
+
+| Característica | Garantia |
+| --- | --- |
+| Decisão | `APPROVED`, `CONDITIONAL`, `RETURNED` ou `BLOCKED` |
+| Segurança operacional | validação *fail-closed* e preservação monotônica de bloqueios |
+| Auditabilidade | findings rastreáveis, relatórios JSON/Markdown e manifesto SHA-256 |
+| Integração | núcleo independente e adaptador TCRIA opcional |
+| Ambiente | Python 3.11 ou superior |
+
+## Índice
+
+- [Escopo](#escopo)
+- [Arquitetura](#arquitetura)
+- [Contrato de integração](#contrato-de-integração)
+- [Estados e confiança](#estados) · [Confiança verificável](#confiança-verificável)
+- [Início rápido](#início-rápido)
+- [Cenários demonstráveis](#cenários-demonstráveis)
+- [Relatórios derivados](#relatórios-derivados)
+- [Extensibilidade e TCRIA](#verificadores-extensíveis) · [Adaptador TCRIA](#adaptador-tcria)
+- [Instalação e validação](#instalação-e-validação)
+
+## Escopo
 
 - núcleo independente de modelo, fornecedor e domínio;
 - validação fail-closed do contrato de entrada;
@@ -138,6 +163,8 @@ um finding crítico zera essa dimensão e determina `BLOCKED` antes de qualquer 
 
 ## Uso
 
+### Início rápido
+
 ```python
 from hashlib import sha256
 
@@ -171,6 +198,10 @@ context = ExecutionContext(
 decision = QuintaOrdemGate.default().evaluate(context)
 print(decision.status.value, decision.confidence)
 ```
+
+> **Importante:** o núcleo valida hashes declarados e referências entre artefatos, mas não abre
+> evidências originais para recalcular hashes. Essa responsabilidade pertence à ingestão e à cadeia
+> de custódia do sistema produtor.
 
 ## Cenários demonstráveis
 
