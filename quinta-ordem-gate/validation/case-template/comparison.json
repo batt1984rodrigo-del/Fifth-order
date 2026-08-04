@@ -1,0 +1,33 @@
+{
+  "case_id": "CASE-001",
+  "execution_id": "CASE-001-RUN-001",
+  "comparison_notice": "Comparison is performed only after gate execution. Human expected review must remain unavailable to the gate before evaluation.",
+  "expected_gate_state": "approved|conditional|returned_for_correction|blocked",
+  "produced_gate_state": "approved|conditional|returned_for_correction|blocked",
+  "agreement": {
+    "state_agreement": false,
+    "full_agreement": false,
+    "state_agreement_with_foundation_divergence": false,
+    "material_divergence": false
+  },
+  "error_classification": {
+    "false_approved": false,
+    "false_blocked": false,
+    "missed_relevant_points": [],
+    "incorrect_findings": [],
+    "findings_without_traceable_evidence": [],
+    "excessive_blocking": false,
+    "improper_release": false,
+    "equivalent_execution_inconsistency": false
+  },
+  "reproducibility": {
+    "decision_reproduced": null,
+    "report_content_reproduced": null,
+    "byte_for_byte_bundle_identity": null,
+    "differences": []
+  },
+  "human_review": {
+    "required": null,
+    "quality_notes": []
+  }
+}
