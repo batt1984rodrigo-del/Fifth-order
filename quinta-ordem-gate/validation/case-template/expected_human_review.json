@@ -1,0 +1,17 @@
+{
+  "case_id": "CASE-001",
+  "review_notice": "This expected review must be recorded and hashed before the gate execution. It must not be provided to the Quinta Ordem Gate before evaluation.",
+  "review_created_at_utc": "<freeze-or-record-timestamp>",
+  "review_hash_sha256": "<hash-of-this-review-file-after-finalization>",
+  "expected_gate_state": "approved|conditional|returned_for_correction|blocked",
+  "critical_points": [
+    {
+      "point_id": "P-001",
+      "expected_classification": "fact|allegation|hypothesis|signal|recommendation|open_point|blocker",
+      "expected_evidence_refs": ["EVD-001"],
+      "expected_reason": "<human-review-rationale>"
+    }
+  ],
+  "known_human_outcome_ref": "<external-reference-not-provided-to-gate>",
+  "notes": []
+}
