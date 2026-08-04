@@ -1,0 +1,20 @@
+{
+  "case_id": "CASE-001",
+  "case_type": "closed_legal_or_administrative_case",
+  "custody_notice": "Original evidence is not stored in this repository. This file records controlled metadata and hashes only.",
+  "created_at_utc": "<freeze-or-record-timestamp>",
+  "created_by": "<human-reviewer-or-system>",
+  "evidence": [
+    {
+      "artifact_id": "EVD-001",
+      "original_location_ref": "<external-controlled-location>",
+      "public_description": "<anonymized-description>",
+      "sha256": "<64-hex-sha256>",
+      "size_bytes": 0,
+      "modified_original": false,
+      "derived_copy_ref": "<derived-copy-location-or-id>",
+      "extraction_status": "ok|error|skipped|unsupported",
+      "notes": []
+    }
+  ]
+}
