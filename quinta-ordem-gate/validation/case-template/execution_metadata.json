@@ -1,0 +1,29 @@
+{
+  "case_id": "CASE-001",
+  "execution_id": "CASE-001-RUN-001",
+  "execution_started_at_utc": "<freeze-or-record-timestamp>",
+  "execution_environment": {
+    "python_version": "<python-version>",
+    "platform": "<platform>",
+    "quinta_ordem_commit": "<commit-sha>",
+    "quinta_ordem_schema_version": "<schema-version>",
+    "tcria_commit": "<commit-sha-if-used>",
+    "config_hash_sha256": "<hash-of-effective-config>"
+  },
+  "normalization_policy": {
+    "timestamps": "frozen|recorded|excluded",
+    "absolute_paths": "normalized|recorded|excluded",
+    "environment_values": "normalized|recorded|excluded"
+  },
+  "inputs": {
+    "evidence_inventory_ref": "evidence_inventory.json",
+    "expected_human_review_ref": "expected_human_review.json",
+    "execution_context_ref": "<generated-execution-context-path>"
+  },
+  "outputs": {
+    "gate_json": "<path>",
+    "gate_markdown": "<path>",
+    "findings_dir": "<path>",
+    "manifest": "<path>"
+  }
+}
