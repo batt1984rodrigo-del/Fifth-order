@@ -138,7 +138,7 @@ def test_missing_original_state_is_not_inferred():
     assert any(finding.code == "ORIGINAL_STATE_UNDECLARED" for finding in result.findings)
 
 
-@pytest.mark.parametrize("open_points", [{"id": "P-1"}, "P-1"])
+@pytest.mark.parametrize("open_points", [{"id": "P-1"}, "P-1", None])
 def test_root_open_points_must_be_a_list(open_points):
     payload = _payload()
     payload["metadata"] = {}
