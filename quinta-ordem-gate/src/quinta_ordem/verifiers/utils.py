@@ -10,7 +10,7 @@ def evidence_ref_from_raw(value: Any) -> EvidenceRef | None:
     if isinstance(value, EvidenceRef):
         return value
     if isinstance(value, str) and value.strip():
-        return EvidenceRef(artifact_id=value)
+        return EvidenceRef(artifact_id=value.strip())
     if not isinstance(value, Mapping):
         return None
 
@@ -26,7 +26,7 @@ def evidence_ref_from_raw(value: Any) -> EvidenceRef | None:
         if key not in {"artifact_id", "id", "ref", "sha256", "source"}
     }
     return EvidenceRef(
-        artifact_id=artifact_id,
+        artifact_id=artifact_id.strip(),
         sha256=sha256 if isinstance(sha256, str) else None,
         source=source if isinstance(source, str) else None,
         metadata=metadata,
@@ -47,7 +47,7 @@ def evidence_ref_for_item(item: Mapping[str, Any]) -> EvidenceRef | None:
     sha256 = item.get("sha256")
     source = item.get("source") or item.get("source_path") or item.get("original_path")
     return EvidenceRef(
-        artifact_id=artifact_id,
+        artifact_id=artifact_id.strip(),
         sha256=sha256 if isinstance(sha256, str) else None,
         source=source if isinstance(source, str) else None,
     )

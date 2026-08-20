@@ -140,5 +140,8 @@ def _metadata(payload: dict[str, Any]) -> dict[str, Any]:
     if "open_points" in payload:
         if "open_points" in copied:
             raise TCRIAAdapterError("open_points must be declared in only one location.")
-        copied["open_points"] = deepcopy(payload["open_points"])
+        open_points = payload["open_points"]
+        if not isinstance(open_points, list):
+            raise TCRIAAdapterError("open_points must be a list.")
+        copied["open_points"] = deepcopy(open_points)
     return copied

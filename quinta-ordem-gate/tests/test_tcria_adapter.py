@@ -138,6 +138,16 @@ def test_missing_original_state_is_not_inferred():
     assert any(finding.code == "ORIGINAL_STATE_UNDECLARED" for finding in result.findings)
 
 
+@pytest.mark.parametrize("open_points", [{"id": "P-1"}, "P-1"])
+def test_root_open_points_must_be_a_list(open_points):
+    payload = _payload()
+    payload["metadata"] = {}
+    payload["open_points"] = open_points
+
+    with pytest.raises(TCRIAAdapterError, match="open_points must be a list"):
+        TCRIAExecutionContextAdapter().adapt(payload)
+
+
 def test_core_import_does_not_load_tcria_adapter():
     project_root = Path(__file__).resolve().parents[1]
     environment = os.environ.copy()
